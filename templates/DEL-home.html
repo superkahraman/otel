@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>Home Page</h1>
+
+<div>
+    <ul>
+    {% for room_template_variable in rooms_list %}
+
+        <li>{{room_template_variable.id}} -- {{room_template_variable.name}}</li>
+    {% endfor %}
+    
+    </ul>
+</div>
+{% endblock %}
+

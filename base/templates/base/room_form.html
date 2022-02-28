@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block content %}
+<!-- BEGIN room_form.html -->
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+       {{form_template.as_p}}
+       
+       
+        <input type="Submit" value="Gonder"/>
+        <input type="button" value="Vazgec" onclick="window.location.href='/'"/>
+    </form>
+
+</div>
+<!-- END room_form.html -->
+{% endblock content%}

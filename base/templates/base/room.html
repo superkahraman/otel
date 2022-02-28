@@ -1,0 +1,17 @@
+{% extends "main.html" %}
+{% block content %}
+<!-- BEGIN room.html -->
+<div><h1 style="float:left">{{oda_in_view.name}}</h1><span class="badge rounded-pill bg-danger" >{{oda_in_view.id}}</span></div>
+<br/> <br/>
+<div style="float:none">
+<p >{{oda_in_view.description}}</p>
+<p><small>{{oda_in_view.created}}</small>| User : {{oda_in_view.host.first_name}} {{oda_in_view.host.last_name}}</p>
+
+<p><strong>Topic:</strong> {{oda_in_view.topic.name}} <span><strong>User:</strong> @{{oda_in_view.host.username}} ({{oda_in_view.host.first_name}} {{oda_in_view.host.last_name}})</span>
+        <strong>Created:</strong> {{oda_in_view.created}} | <strong>Updated:</strong> {{oda_in_view.updated}}
+        </p>
+<p><a href="{% url 'update-room_in_urls' oda_in_view.id %}">[Edit]</a></p>
+</div>
+<!-- END room.html -->
+{% endblock %}
+
