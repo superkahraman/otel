@@ -28,6 +28,11 @@ grid-template-columns: 1fr 3fr;
         </div>
     {% endfor %}
 
+    <hr />
+    {% if user.is_authenticated %}
+    Hello, {{user.username}}
+    {% endif %}
+
     </div>
 
 <!----Main Content------------------------------------------------->
@@ -41,14 +46,16 @@ grid-template-columns: 1fr 3fr;
             <a href="{% url 'room_page_name_in_urls' room_template.id %}">        
             <strong>ID:</strong> {{room_template.id}} - {{room_template.name}}
             </a>
-            <p><strong>Topic:</strong> {{room_template.topic.name}} <span><strong>User:</strong> @{{room_template.host.username}} ({{room_template.host.first_name}} {{room_template.host.last_name}})</span>
-            <strong>Created:</strong> {{room_template.created}} | <strong>Updated:</strong> {{room_template.updated}}
+            <p><strong>Topic:</strong> {{room_template.topic.name}} <span><br/>
+            <strong>User:</strong> @{{room_template.host.username}} ({{room_template.host.first_name}} {{room_template.host.last_name}})</span><br/>
+            <strong>Created:</strong> {{room_template.created}} | <strong>Updated: </strong>{{room_template.updated}}
             
             <a href="{% url 'update-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_edit.png' %}" alt="Edit Room"/></a> <a href="{% url 'delete-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_delete.png' %}" alt="Delete Room"/></a>
             </p>
             </li>
         {% endfor %}    
         </ul>
+
     </div>
 </div>
 

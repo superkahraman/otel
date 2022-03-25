@@ -28,6 +28,13 @@
         }
 
      .alert-error   {color:#842029;background-color:#f8d7da;border-color:#f5c2c7}
+     /*
+    Django Messages'da ERROR tag'i ile gönderdiğimizde, Bootstrap bunu anlayamıyor. 
+    Çünkü Bootstrap'da alarm classlarındaki karşılık "alert-danger" şeklinde
+    Bu yüzden "alert-error" u biz oluşturuyoruz. Özellikleri alert-danger ile aynı(Orjinal CSS'den kopyaladım..
+    Bunun daha mantıklı yolları vardır ama zaman kaybetmemek için böyle yaptım.)
+
+     */
     </style>
 
     <title>{{ title }}</title>

@@ -4,7 +4,13 @@
   <a href="{% url 'empty_room_page_name_in_urls' %}" class="btn btn-warning">Room</a>
   <a href="{% url 'create-room_in_urls' %}" class="btn btn-primary">Create Room</a>
 
+
+  {% if user.is_authenticated %}
+  <a href="{% url 'urlUserLogout' %}" class="btn btn-secondary">Logout</a>
+  
+  {% else %}
   <a href="{% url 'urlUserLogin' %}" class="btn btn-secondary">Login</a>
+  {% endif %}
   <a href="/admin/" class="btn btn-danger" target="_blank">Admin</a>
 
 

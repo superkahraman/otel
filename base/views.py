@@ -1,9 +1,12 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic  # models'deki Room modelini alıyoruz.
 from .forms import RoomForm  # forms.py'dan gelen class
 from django.db.models import Q  # Objects.filter'da  and/or vs kullanmak için
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -42,6 +45,7 @@ def empty_room(request):
     return render(request, 'base/empty_room.html')
 
 
+@login_required(login_url='urlUserLogin')
 def createRoom(request):
     form_data = RoomForm()  # forms.py'da tanımladık..
 
@@ -78,10 +82,13 @@ def form_submitted(request):
     return render(request, 'base/form_submitted.html')
 
 
+@login_required(login_url='urlUserLogin')
 def updateRoom(request, room_id_in_url):
     room_data = Room.objects.get(id=room_id_in_url)
     form_data = RoomForm(instance=room_data)
 
+    if request.user != room_data.host:
+        return HttpResponse("Bunu editlemek sana mı kaldı yarram?")
     # FORM GÜNCELLEME İŞLEMLERİ
     if request.method == 'POST':  # Formumuzda action olarak kendini göstermiştik. Yani Submit edildiğinde
         # buraya POST datası gönderiyor.
@@ -101,9 +108,13 @@ def updateRoom(request, room_id_in_url):
 # O template'de bir form var. methodu da POST
 # eğer bu view'a POST datası gelirse, ilgili odayı siliyoruz.
 # Ve room_deleted templatini döndürüyoruz..
+@login_required(login_url='urlUserLogin')
 def deleteRoom(request, room_id_in_url):
     # Room.objects.filter(id=room_id_in_url).delete()
     room = Room.objects.get(id=room_id_in_url)
+    if request.user != room.host:
+        return HttpResponse("Bunu silmek sana mı kaldı yarram?")
+
     if request.method == 'POST':
         room.delete()
         return render(request, 'base/room_deleted.html')
@@ -112,12 +123,34 @@ def deleteRoom(request, room_id_in_url):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
+        usernameGelen = request.POST.get('username')
+        passwordGelen = request.POST.get('password')
+        # Posttan gelen usernameGelen diye bir User var mı kontrol ediyoruz.
+        # Eğer yoksa uyarı çeviriyoruz.
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=usernameGelen)
+            print(user)
+
         except:
-            messages.error(request, "User does not exists")
+            custom_message = "User <strong>" + usernameGelen + "</strong> does not exists.."
+            messages.error(request, custom_message)
+            return redirect('urlUserLogin')
+        #######################################################
+        user_kontrol = authenticate(request, username=usernameGelen,
+                                    password=passwordGelen)
+
+        if user_kontrol is not None:
+            login(request, user_kontrol)
+            messages.info(request, "Login Başarılı :)")
+            return redirect('home_page_name_in_urls')
+        else:
+            messages.error(request, "Wrong user name or password ")
+
     icerik = {}
     return render(request, "base/login_register.html", icerik)
+
+
+def user_logout(request):
+    logout(request)
+    messages.warning(request, "Susccessfully Logged Out")
+    return redirect('home_page_name_in_urls')

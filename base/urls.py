@@ -37,5 +37,7 @@ urlpatterns = [
 
 
 
-    path("login/", views.user_login, name="urlUserLogin")
+    path("giris/", views.user_login, name="urlUserLogin"),
+    path("cikis/", views.user_logout, name="urlUserLogout")
+
 ]
