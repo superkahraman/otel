@@ -34,4 +34,8 @@ urlpatterns = [
     # static dosyalar ve favicon
     path("favicon.ico", RedirectView.as_view(
         url=staticfiles_storage.url("favicon.ico")),),
+
+
+
+    path("login/", views.user_login, name="urlUserLogin")
 ]

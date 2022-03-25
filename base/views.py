@@ -1,21 +1,32 @@
-from ast import operator
 from django.shortcuts import render, redirect
-from .models import Room  # models'deki Room modelini alıyoruz.
+from .models import Room, Topic  # models'deki Room modelini alıyoruz.
 from .forms import RoomForm  # forms.py'dan gelen class
-
+from django.db.models import Q  # Objects.filter'da  and/or vs kullanmak için
+from django.contrib import messages
+from django.contrib.auth.models import User
 # Create your views here.
-
-odalar = [
-    {'id': 1, 'name': 'Room One'},
-    {'id': 2, 'name': 'Room Two'},
-    {'id': 3, 'name': 'Room Three'},
-]
 
 
 def home(request):
-    odalar = Room.objects.all()
 
-    icerik = {'rooms_list_in_view': odalar}
+    if request.GET.get('ara') != None:
+        aranan_sey = request.GET.get('ara')
+    else:
+        aranan_sey = ''
+
+    print(aranan_sey)
+
+    # Bu şekilde bir filte kullanınca hem Room modelinin topic.name'inde hem de Room.name'de arama yaptırabiliyoruz.
+    # Bunu Q yapıyor. ( | bu işaret OR anlamına geliyor. Tabii ki & AND'de kullanabiliriz..)
+    odalar = Room.objects.filter(
+        Q(topic__name__icontains=aranan_sey) | Q(name__icontains=aranan_sey) | Q(description__icontains=aranan_sey))
+
+    topics = Topic.objects.all()  # Home'da sidebar'da Topic'leri listelemek için
+
+    oda_sayisi = odalar.count()
+
+    icerik = {'rooms_list_in_view': odalar,
+              'topics': topics, 'aranan_sey': aranan_sey, 'oda_sayisi': oda_sayisi}
     # rooms_list_in_view home.html template'e gönderiliyor.
     return render(request, 'base/home.html', icerik)
 
@@ -85,10 +96,28 @@ def updateRoom(request, room_id_in_url):
     return render(request, 'base/room_form.html', icerik)
 
 
-# Acımasız deleteRoom fonksiyonumuz
-# models'da tanımladığımız Room objesinin id'sini, url'deki id ile eşleyip o kaydı direk siliyor.
-# Bam gümm!! Herhangi bir kontrol yok: URL'de delete-room/blabla desek bile işi yapıp
-# yapmadığına bakmadan direk HTML'i render ediyor.
+# Buraya bir "id" ile geliyoruz.
+# O id'nin içeriği Room.objects.get ile alıyoruz ve delete_confirm templatini döndürüyoruz
+# O template'de bir form var. methodu da POST
+# eğer bu view'a POST datası gelirse, ilgili odayı siliyoruz.
+# Ve room_deleted templatini döndürüyoruz..
 def deleteRoom(request, room_id_in_url):
-    Room.objects.filter(id=room_id_in_url).delete()
-    return render(request, 'base/room_deleted.html')
+    # Room.objects.filter(id=room_id_in_url).delete()
+    room = Room.objects.get(id=room_id_in_url)
+    if request.method == 'POST':
+        room.delete()
+        return render(request, 'base/room_deleted.html')
+    return render(request, 'base/delete_confirm.html', {'obj': room})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, "User does not exists")
+    icerik = {}
+    return render(request, "base/login_register.html", icerik)

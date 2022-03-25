@@ -2,7 +2,11 @@
 <div class="btn-group">
   <a href="/" class="btn btn-success" aria-current="page">Home</a>
   <a href="{% url 'empty_room_page_name_in_urls' %}" class="btn btn-warning">Room</a>
-  <a href="/admin/" class="btn btn-danger">Admin</a>
   <a href="{% url 'create-room_in_urls' %}" class="btn btn-primary">Create Room</a>
+
+  <a href="{% url 'urlUserLogin' %}" class="btn btn-secondary">Login</a>
+  <a href="/admin/" class="btn btn-danger" target="_blank">Admin</a>
+
+
 </div>
 <!-- BEGIN footer.html -->

@@ -1,26 +1,57 @@
 
 {% extends "main.html" %}
-{% block content %}
 {% load static %}
+{% block content %}
+<style>
+.home-container{
+display:grid;
+grid-template-columns: 1fr 3fr;
+}
+
+
+</style>
+
+
 <h1>Home Page</h1>
 
-<div>
-    <ul>
-    {% for room_template in rooms_list_in_view %}
-
-        <li>
-        <a href="{% url 'room_page_name_in_urls' room_template.id %}">        
-        <strong>ID:</strong> {{room_template.id}} - {{room_template.name}}
-        </a>
-        <p><strong>Topic:</strong> {{room_template.topic.name}} <span><strong>User:</strong> @{{room_template.host.username}} ({{room_template.host.first_name}} {{room_template.host.last_name}})</span>
-        <strong>Created:</strong> {{room_template.created}} | <strong>Updated:</strong> {{room_template.updated}}
-        
-        <a href="{% url 'update-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_edit.png' %}" alt="Edit Room"/></a> <a href="{% url 'delete-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_delete.png' %}" alt="Delete Room"/></a>
-        </p>
-        </li>
+<div class="home-container">
+<!-----Left Side Bar-------------------------------------------->
+    <div>
+    <h3>Browse Topics</h3>
+    <hr/>
+        <div>
+            <a href="{% url 'home_page_name_in_urls'%}">All Topics (Home)</a>
+        </div>
+    {% for topic in topics %}
+        <div>
+            <a href="{% url 'home_page_name_in_urls'%}?ara={{topic.name}}">{{topic.name}}</a>
+        </div>
     {% endfor %}
-    
-    </ul>
+
+    </div>
+
+<!----Main Content------------------------------------------------->
+    <div>
+    <h3>Rooms List for <i>"{{aranan_sey}}"</i> Total: {{oda_sayisi}}</h3>
+    <hr/>
+        <ul>
+        {% for room_template in rooms_list_in_view %}
+
+            <li>
+            <a href="{% url 'room_page_name_in_urls' room_template.id %}">        
+            <strong>ID:</strong> {{room_template.id}} - {{room_template.name}}
+            </a>
+            <p><strong>Topic:</strong> {{room_template.topic.name}} <span><strong>User:</strong> @{{room_template.host.username}} ({{room_template.host.first_name}} {{room_template.host.last_name}})</span>
+            <strong>Created:</strong> {{room_template.created}} | <strong>Updated:</strong> {{room_template.updated}}
+            
+            <a href="{% url 'update-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_edit.png' %}" alt="Edit Room"/></a> <a href="{% url 'delete-room_in_urls' room_template.id %}"><img src="{% static '/assets/images/icon_delete.png' %}" alt="Delete Room"/></a>
+            </p>
+            </li>
+        {% endfor %}    
+        </ul>
+    </div>
 </div>
+
+
 {% endblock %}
 
